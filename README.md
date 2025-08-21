@@ -1,4 +1,21 @@
 # DiaTool-DPO: Multi-turn Direct Preference Optimization for Tool-augmented Language Models
+This repository presents the source code of "DiaTool-DPO: Multi-turn Direct Preference Optimization for Tool-augmented Language Models", which is accepted at SIGDIAL 2025.
+
+This work utilizes functionary chat template and trl to implement multi-turn DPO for tool-augmented llms.
+The multi-turn DPO algorithm implemented in this repo is also applicable to other applications other than tool-augmented llms.
+We hope this release will be helpful to those who are working on multi-turn conversation patterns of LLMs.
+
+## CITATION
+Please cite our work as below.
+```bibtex
+@software{jung2025dia,
+  author = {Sunghee Jung and Donghun Lee and Shinbok Lee and Gaeun Seo and Daniel Lee and Byeongil Ko and Junrae Cho and Kihyun Kim and Eunggyun Kim and Myeongcheol Shin,
+  title = {DiaTool-DPO: Multi-turn Direct Preference Optimization for Tool-augmented Language Models},
+  year = {2025},
+  url = {https://github.com/kakao/diatool-dpo},
+  version = {1.0.0}
+}
+```
 * This repository is based on TRL(Transformer Reinforcement Learning) and functionary
 ```bibtex
 @misc{vonwerra2022trl,
@@ -19,7 +36,9 @@
   version = {1.0.0}
 }
 ```
+## INSTALLATION
 * For installation, please follow the direction of TRL (included at the bottom of this README.md).
+## RUNNUNG
 * Arguments added compared to TRL
 
 | Argument | Meaning                | Default value if not specified |
@@ -76,12 +95,15 @@ epoch
 1.0
 ```
 
+## PERFORMANCE
+Our DiaTool-DPO approach achieved 44% improvement in slot-filling and 9.6% improvement in relevance over the SFT-onlybaseline. It reaches 94.8% of the slot performance of GPT-4o. It also achieves 123.5% of the relevance score of GPT-4o-mini and 91.3% of the relevance score of GPT-4o.
 
-
-| Evaluation          | Model       | Call   | Competion | Slot    | Relevance | Avg(micro) |
-|---------------------|-------------|--------|-----------|---------|-----------|------------|
-| FCBench             | SFT-Only    | 0.8429 | 0.9571    | 0.6389  | 0.8261    | 0.8442     |
-| FCBench             | SFT + DiaTool-DPO | 0.8571 | 0.9286    | 0.9167  | 0.9130    | 0.9045     |
+| Model                  | Call  | Competion | Slot  | Relevance | Avg(micro) |
+|------------------------|-------|-----------|-------|-----------|------------|
+| SFT-Only               | 0.843 | 0.957     | 0.639 | 0.826     | 0.844      |
+| SFT + DiaTool-DPO      | 0.857 | 0.929     | 0.917 | 0.913     | 0.905      |
+| GPT-4o-mini-2024-07-18 | 0.929 | 0.971     | 0.972 | 0.739     | 0.920      |
+| GPT-4o-2024-08-06      | 0.914 | 0.926     | 0.972 | 1.000     | 0.925      |
   
 <details>
 <summary>TRL</summary>
