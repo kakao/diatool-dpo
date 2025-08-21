@@ -37,74 +37,7 @@ Please cite our work as below.
 }
 ```
 ## INSTALLATION
-* For installation, please follow the direction of TRL (included at the bottom of this README.md).
-## RUNNUNG
-* Arguments added compared to TRL
-
-| Argument | Meaning                | Default value if not specified |
-|----------|------------------------|--------------------------------|
-| gamma    | reward scaling factor  | 0.5                            |
-| margin   | reward gap subtraction | 0.5                            |
-
-* Running script
-```
-cd ~/diatool-dpo
-python -u -m accelerate.commands.launch
---config_file=./examples/accelerate_configs/deepspeed_zero3.yaml 
---num_processes 8
-./examples/scripts/function_dpo.py 
---dataset_name={dataset_path}
---model_name_or_path={model_name_or_path_to_start_train}
---per_device_train_batch_size
-1
---learning_rate
-1e-7
---gradient_accumulation_steps
-1
---logging_steps
-10
---eval_steps
-10
---output_dir={model_save_dir}
---warmup_steps
-150
---report_to
-wandb
---bf16
---logging_first_step
---no_remove_unused_columns
---max_length
-8192
---max_prompt_length
-4096
---do_eval
-True
---eval_strategy
-steps
---save_strategy
-epoch
---save_steps
-1
---beta
-0.5
---gamma
-0.5
---margin
-2.0
---num_train_epochs
-1.0
-```
-
-## PERFORMANCE
-Our DiaTool-DPO approach achieved 44% improvement in slot-filling and 9.6% improvement in relevance over the SFT-onlybaseline. It reaches 94.8% of the slot performance of GPT-4o. It also achieves 123.5% of the relevance score of GPT-4o-mini and 91.3% of the relevance score of GPT-4o.
-
-| Model                  | Call  | Competion | Slot  | Relevance | Avg(micro) |
-|------------------------|-------|-----------|-------|-----------|------------|
-| SFT-Only               | 0.843 | 0.957     | 0.639 | 0.826     | 0.844      |
-| SFT + DiaTool-DPO      | 0.857 | 0.929     | 0.917 | 0.913     | 0.905      |
-| GPT-4o-mini-2024-07-18 | 0.929 | 0.971     | 0.972 | 0.739     | 0.920      |
-| GPT-4o-2024-08-06      | 0.914 | 0.926     | 0.972 | 1.000     | 0.925      |
-  
+* For installation, please follow the direction of TRL.
 <details>
 <summary>TRL</summary>
 
@@ -343,6 +276,73 @@ DPO is based on the original implementation of **"Direct Preference Optimization
 ```
 
 </details>
+
+## RUNNUNG
+* Arguments added compared to TRL
+
+| Argument | Meaning                | Default value if not specified |
+|----------|------------------------|--------------------------------|
+| gamma    | reward scaling factor  | 0.5                            |
+| margin   | reward gap subtraction | 0.5                            |
+
+* Running script
+```
+cd ~/diatool-dpo
+python -u -m accelerate.commands.launch
+--config_file=./examples/accelerate_configs/deepspeed_zero3.yaml 
+--num_processes 8
+./examples/scripts/function_dpo.py 
+--dataset_name={dataset_path}
+--model_name_or_path={model_name_or_path_to_start_train}
+--per_device_train_batch_size
+1
+--learning_rate
+1e-7
+--gradient_accumulation_steps
+1
+--logging_steps
+10
+--eval_steps
+10
+--output_dir={model_save_dir}
+--warmup_steps
+150
+--report_to
+wandb
+--bf16
+--logging_first_step
+--no_remove_unused_columns
+--max_length
+8192
+--max_prompt_length
+4096
+--do_eval
+True
+--eval_strategy
+steps
+--save_strategy
+epoch
+--save_steps
+1
+--beta
+0.5
+--gamma
+0.5
+--margin
+2.0
+--num_train_epochs
+1.0
+```
+
+## PERFORMANCE
+Our DiaTool-DPO approach achieved 44% improvement in slot-filling and 9.6% improvement in relevance over the SFT-onlybaseline. It reaches 94.8% of the slot performance of GPT-4o. It also achieves 123.5% of the relevance score of GPT-4o-mini and 91.3% of the relevance score of GPT-4o.
+
+| Model                  | Call  | Competion | Slot  | Relevance | Avg(micro) |
+|------------------------|-------|-----------|-------|-----------|------------|
+| SFT-Only               | 0.843 | 0.957     | 0.639 | 0.826     | 0.844      |
+| SFT + DiaTool-DPO      | 0.857 | 0.929     | 0.917 | 0.913     | 0.905      |
+| GPT-4o-mini-2024-07-18 | 0.929 | 0.971     | 0.972 | 0.739     | 0.920      |
+| GPT-4o-2024-08-06      | 0.914 | 0.926     | 0.972 | 1.000     | 0.925      |
 
 ## LICENSE
 License
