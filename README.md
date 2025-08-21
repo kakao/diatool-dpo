@@ -29,12 +29,11 @@
 
 * Running script
 ```
-(이미지 사용 시 conda base 대신 기본 python 환경에 설치되어 있으므로 conda deactivate 먼저 하셔야합니다)
-cd ~/trl
+cd ~/diatool-dpo
 python -u -m accelerate.commands.launch
---config_file=/home/bc-user/trl/examples/accelerate_configs/deepspeed_zero3.yaml 
+--config_file=./examples/accelerate_configs/deepspeed_zero3.yaml 
 --num_processes 8
-/home/bc-user/trl/examples/scripts/function_dpo.py 
+./examples/scripts/function_dpo.py 
 --dataset_name={dataset_path}
 --model_name_or_path={model_name_or_path_to_start_train}
 --per_device_train_batch_size
@@ -76,107 +75,14 @@ epoch
 --num_train_epochs
 1.0
 ```
-* Running script with example arguments
-```
-(이미지 사용 시 conda base 대신 기본 python 환경에 설치되어 있으므로 conda deactivate 먼저 하셔야합니다)
-cd ~/trl
-python -u -m accelerate.commands.launch
---config_file=/home/bc-user/trl/examples/accelerate_configs/deepspeed_zero3.yaml
---num_processes 8
-/home/bc-user/trl/examples/scripts/function_dpo.py
---dataset_name=/data/llm-public_636/users/kong/data/dpo/diatool_dpo_dataset/glaive_ko_all/concat.jsonl.string
---model_name_or_path=/data/llm-public_636/users/hubert/workspace/kanana-fc/train/models/kanana-essence-8b-fc-v1.0.1-stage1-rc.20
---per_device_train_batch_size
-1
---learning_rate
-1e-7
---gradient_accumulation_steps
-1
---logging_steps
-10
---eval_steps
-10
---output_dir={model_save_dir}
---warmup_steps
-150
---report_to
-wandb
---bf16
---logging_first_step
---no_remove_unused_columns
---max_length
-8192
---max_prompt_length
-4096
---do_eval
-True
---eval_strategy
-steps
---save_strategy
-epoch
---save_steps
-1
---beta
-0.5
---gamma
-0.5
---margin
-2.0
---num_train_epochs
-1.0
-```
-## Implementation Details
-1. 데이터셋 파싱
-* DiaTool-DPO 데이터셋은 tools 목록이 들어 있고, tool call을 위한 json 형태로 되어 있기 때문에 기존 DPO 데이터셋과 다른 파싱 과정을 거친다.
-* 이 과정에서 SFT 모델의 tool call template을 tokenizer에서 읽어와 참조한다.
-* 구현 위치: 
-  * examples/scripts/function_dpo.py
-  * trl/trainer/dpo_trainer.py: 
-    * DPOTrainer.tokenize_row()
-2. Multi-turn 데이터에서 agent turn을 label에서 masking하도록 agent turn과 assistant turn 구별되게 chunking하기
-* 구현 위치: 
-  * trl/trainer/dpo_trainer.py
-    * get_masked_labels
-    * get_prompt_template_from_tokenizer
-    * get_prefix_assistant_token_ids
-    * get_assistant_stop_token_ids
-3. Turn 별로 reward 계산
-* 구현 위치: 
-  * trl/trainer/dpo_config.py: gamma, margin 추가
-  * trl/trainer/dpo_trainer.py
-    * DPOTrainer.get_batch_logps(): 2단계에서 구한 개별의 assistant turn에 turn order에 따른 scaling factor를 곱한다.
-4. Turn 별 reward를 사용해 loss 계산
-* 구현 위치:
-  * trl/trainer/dpo_trainer.py
-    * DPOTrainer.dpo_loss(): normalization, reward margin subtraction 구현
-## 기타
-* Dataset 경로: /data/llm-public_636/users/kong/data/dpo/diatool_dpo_dataset/glaive_ko_all/concat.jsonl.string
-* 이미지: diatool_dpo
-* 성능:
-  * FCBench result file: /data/llm-public_636/users/kong/FunctionChat-Bench/output/others/glaive_korean_v3_dmpo_gamma0.5_beta0.5_margin2.0_lr1e-7
+
+
 
 | Evaluation          | Model       | Call   | Competion | Slot    | Relevance | Avg(micro) |
 |---------------------|-------------|--------|-----------|---------|-----------|------------|
 | FCBench             | SFT-Only    | 0.8429 | 0.9571    | 0.6389  | 0.8261    | 0.8442     |
-| FCBench             | SFT + DiaTool-DPO | 0.7714 | 0.8986    | 0.9167  | 0.9130    | 0.8500     |
-| FCBench-calibration | SFT + DiaTool-DPO | 0.8571 | 0.9286    | 0.9167  | 0.9130    | 0.9045     |
-    * SFT-Only: /data/nlp-public_338/models/decoder/internal/functionary-lmt-llama3-8b-sft-stage1-rc.30
-    * SFT + DiaTool-DPO: /data/llm-public_636/users/kong/checkpoint/dmpo_attempt/diff_margin/glaive_korean_v3_dmpo_gamma0.5_beta0.5_margin2.0_lr1e-7_new_method2
-* 위키
-  * 인수인계: https://wiki.daumkakao.com/spaces/nLp/pages/1727260458/20250423_DiaTool_DPO+%EC%9D%B8%EC%88%98%EC%9D%B8%EA%B3%84
-  * FCBench-calibration: call과 completion 수정한 내용. 모델이 뭐라고 대답해서 맞게 처리했는지
-    * 파일 링크(wiki): https://wiki.daumkakao.com/spaces/nLp/pages/1734226022/FCBench+Dialog+Calibration
-    * 액셀 파일 내 data/v3 컬럼 참조 
-    * 예) XXX를 메모해줘 -> required field인 '메모 제목'을 자동생성하고 call이 일어나는게 정답으로 되어있지만, '메모 제목은 무엇으로 할까요?' 라고 물어보느라 call이 안 일어나는 경우에 대해 틀리지 않았다고 생각해 채점을 수정
-* 이름 변경 관련
-  * 위키나 파일 저장 경로에 보면 데이터를 v1, v2, v3이라 부르는 경우가 있는데, 이것은 논문에서 easy, hard, all에 대응함. 이름이 변경된 바 있음
-
-
-
-
-
-
-
+| FCBench             | SFT + DiaTool-DPO | 0.8571 | 0.9286    | 0.9167  | 0.9130    | 0.9045     |
+  
 <details>
 <summary>TRL</summary>
 
@@ -415,6 +321,7 @@ DPO is based on the original implementation of **"Direct Preference Optimization
 ```
 
 </details>
+
 ## LICENSE
 License
 This software is licensed under the Apache 2 license, quoted below.
