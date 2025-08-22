@@ -1,20 +1,23 @@
-# DiaTool-DPO: Multi-turn Direct Preference Optimization for Tool-augmented Language Models
-This repository presents the source code of "DiaTool-DPO: Multi-turn Direct Preference Optimization for Tool-augmented Language Models", which is accepted at SIGDIAL 2025.
+# DiaTool-DPO: Multi-Turn Direct Preference Optimization for Tool-Augmented Large Language Models
+This repository presents the source code of ["DiaTool-DPO: Multi-Turn Direct Preference Optimization for Tool-Augmented Large Language Models"](https://arxiv.org/abs/2504.02882), which is accepted at SIGDIAL 2025.
 
-This work utilizes functionary chat template and trl to implement multi-turn DPO for tool-augmented llms.
-The multi-turn DPO algorithm implemented in this repo is also applicable to other applications other than tool-augmented llms.
-We hope this release will be helpful to those who are working on multi-turn conversation patterns of LLMs.
+This work utilizes functionary chat template and trl to implement multi-turn DPO for tool-augmented LLMs.
+
+The multi-turn DPO algorithm implemented in this repo is also applicable to other applications other than tool-augmented LLMs.
+
+Understanding the value of joyful conversations, Kakao hopes this release will aid researchers working on multi-turn dialogue patterns in LLMs
 
 ## CITATION
-Please cite our work as below.
+* **PLEASE CITE OUR WORK AS BELOW.**
 ```bibtex
-@software{jung2025dia,
-  author = {Sunghee Jung and Donghun Lee and Shinbok Lee and Gaeun Seo and Daniel Lee and Byeongil Ko and Junrae Cho and Kihyun Kim and Eunggyun Kim and Myeongcheol Shin,
-  title = {DiaTool-DPO: Multi-turn Direct Preference Optimization for Tool-augmented Language Models},
+@inproceedings{jung2025diatool,
+  title = {DiaTool-DPO: Multi-Turn Direct Preference Optimization for Tool-Augmented Large Language Models},
+  author = {Jung, Sunghee and Lee, Donghun and Lee, Shinbok and Seo, Gaeun and Lee, Daniel and Ko, Byeongil and Cho, Junrae and Kim, Kihyun and Kim, Eunggyun and Shin, Myeongcheol},
+  booktitle = {Proceedings of the 26th Annual Meeting of the Special Interest Group on Discourse and Dialogue (SIGDIAL 2025)},
   year = {2025},
-  url = {https://github.com/kakao/diatool-dpo},
-  version = {1.0.0}
+  address = {Avignon, France}
 }
+
 ```
 * This repository is based on TRL(Transformer Reinforcement Learning) and functionary
 ```bibtex
@@ -278,7 +281,7 @@ DPO is based on the original implementation of **"Direct Preference Optimization
 </details>
 
 ## RUNNUNG
-* Arguments added compared to TRL
+* Arguments added compared to TRL DPO Setting.
 
 | Argument | Meaning                | Default value if not specified |
 |----------|------------------------|--------------------------------|
@@ -335,14 +338,17 @@ epoch
 ```
 
 ## PERFORMANCE
-Our DiaTool-DPO approach achieved 44% improvement in slot-filling and 9.6% improvement in relevance over the SFT-onlybaseline. It reaches 94.8% of the slot performance of GPT-4o. It also achieves 123.5% of the relevance score of GPT-4o-mini and 91.3% of the relevance score of GPT-4o.
+We evaluated our work with FunctionChat-Bench. 
+Our DiaTool-DPO approach achieved 44% improvement in slot-filling and 9.6% improvement in relevance over the SFT-only baseline. It reaches 94.8% of the slot performance of GPT-4o. It also achieves 123.5% of the relevance score of GPT-4o-mini and 91.3% of the relevance score of GPT-4o.
+Further details about experiments and evaluations are included in our paper.
+https://arxiv.org/abs/2504.02882
 
-| Model                  | Call  | Competion | Slot  | Relevance | Avg(micro) |
-|------------------------|-------|-----------|-------|-----------|------------|
-| SFT-Only               | 0.843 | 0.957     | 0.639 | 0.826     | 0.844      |
-| SFT + DiaTool-DPO      | 0.857 | 0.929     | 0.917 | 0.913     | 0.905      |
-| GPT-4o-mini-2024-07-18 | 0.929 | 0.971     | 0.972 | 0.739     | 0.920      |
-| GPT-4o-2024-08-06      | 0.914 | 0.926     | 0.972 | 1.000     | 0.925      |
+| Model                  | Call  | Competion | Slot  | Relevance | Avg(micro) | Avg(macro) |
+|------------------------|-------|-----------|-------|-----------|------------|------------|
+| SFT-Only               | 0.843 | 0.957     | 0.639 | 0.826     | 0.844      |0.816       |
+| SFT + DiaTool-DPO      | 0.857 | 0.929     | 0.917 | 0.913     | 0.905      |0.904       |
+| GPT-4o-mini-2024-07-18 | 0.929 | 0.971     | 0.972 | 0.739     | 0.920      |0.903       |
+| GPT-4o-2024-08-06      | 0.914 | 0.926     | 0.972 | 1.000     | 0.925      |0.953       |
 
 ## LICENSE
 License
