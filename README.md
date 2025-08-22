@@ -291,7 +291,7 @@ cd ~/diatool-dpo
 python -u -m accelerate.commands.launch
 --config_file=./examples/accelerate_configs/deepspeed_zero3.yaml 
 --num_processes 8
-./examples/scripts/function_dpo.py 
+./examples/scripts/diatool_dpo.py 
 --dataset_name={dataset_path}
 --model_name_or_path={model_name_or_path_to_start_train}
 --per_device_train_batch_size
