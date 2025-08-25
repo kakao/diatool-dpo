@@ -20,6 +20,11 @@ make dev
 * Ensure that your PR includes a test that fails without your patch, and pass with it.
 * Ensure the PR description clearly describes the problem and solution. Include the relevant issue number if applicable.
 
+## Submitting Pull Requests
+
+When you are sending a pull request, please sign the [CLA](https://cla-assistant.io/kakao/diatool-dpo)(Contributor Licensing Agreement) for Individual.  
+If you need a Contributor Licensing Agreement for Corporate, please [contact us](mailto:oss@kakaocorp.com).
+
 ## PR submission guidelines
 
 * Keep each PR focused. While it's more convenient, do not combine several unrelated fixes together. Create as many branches as needing to keep each PR focused.
